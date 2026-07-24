@@ -34,9 +34,18 @@ House ads today; designed so a real ad network (AdSense/Unity/etc.) only replace
 - `POST /api/ads/:adId/event` body `{ "type": "impression" | "complete" }` → `{ ok, stats }`. 404 unknown ad, 400 bad type.
 - `GET /api/ads/stats` → `{ impressions, completes, estimatedSupportUsd }`. `estimatedSupportUsd` uses a placeholder rate (`ESTIMATED_REVENUE_PER_COMPLETE = $0.004/complete`) until a network reports real revenue.
 
+### Supporter rewards (gamified support hub)
+Anonymous, account-free: the frontend generates a `supporterId` (localStorage, `^[a-z0-9-]{8,64}$`) and sends it with requests. Module: `server/src/rewards.ts`.
+- Earning: `POST /api/ads/:adId/event` with `{ type: "complete", supporterId }` awards **1 raffle ticket + 10 points** per completed ad (constants in rewards.ts).
+- `GET /api/rewards/config` → `{ giveaways, catalog, earning }`. Giveaways and the redemption catalog are defined server-side in rewards.ts (edit there to add raffles/rewards).
+- `GET /api/rewards/state/:supporterId` → `{ points, tickets, badges, entries, redemptions }`.
+- `POST /api/rewards/giveaways/:giveawayId/enter` body `{ supporterId, tickets }` — spends tickets for entries. 409 `not_enough_tickets`, 404 unknown giveaway.
+- `POST /api/rewards/redeem` body `{ supporterId, itemId }` — badges are granted instantly (409 `already_owned` on repeats); gift cards create a `pending` redemption for **manual fulfillment** by the operator. 409 `not_enough_points`.
+- Raffle draws are manual for now: entries live in `server/data/rewards.json`; pick winners from `supporters[*].entries[giveawayId]` weights after `endsAt`.
+
 ## Persistence
 
-- Ad events append to `server/data/ad-events.json` (git-ignored). Writes are serialized through a promise queue to avoid interleaved file writes. Everything else is stateless; user data lives client-side in localStorage for now.
+- Ad events append to `server/data/ad-events.json`; supporter rewards live in `server/data/rewards.json` (both git-ignored). Writes are serialized through a promise queue to avoid interleaved file writes. Everything else is stateless; user data lives client-side in localStorage for now.
 
 ## Roadmap / not yet built
 

@@ -3,6 +3,7 @@ import cors from 'cors';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { awardAdComplete, registerRewards } from './rewards.js';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -207,6 +208,9 @@ app.post('/api/ads/:adId/event', async (req, res) => {
   }
   adEvents.push({ adId, type, at: new Date().toISOString() });
   persistEvents();
+  if (type === 'complete') {
+    await awardAdComplete((req.body as { supporterId?: string } | undefined)?.supporterId);
+  }
   res.json({ ok: true, stats: adStats() });
 });
 
@@ -214,6 +218,8 @@ app.get('/api/ads/stats', async (_req, res) => {
   await loadEvents();
   res.json(adStats());
 });
+
+registerRewards(app);
 
 app.listen(PORT, () => {
   console.log(`GamersUnion server on ${SELF_URL} (frontend: ${FRONTEND_URL})`);

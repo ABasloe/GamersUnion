@@ -59,6 +59,13 @@ Status legend: ✅ done · 🔲 todo
 - 🔲 Sign up with a real ad network (AdSense/Unity/etc.) and swap the AD_POOL source — requires business account, user action
 - 🔲 Payments/payouts integration once a network reports real revenue
 
+## Gamified support hub (seventh request)
+- ✅ Watching ads earns raffle tickets (+1) and points (+10) per completed view — anonymous supporterId, no account needed
+- ✅ Steam-key raffles: seeded giveaways, spend tickets for entries, entries tracked server-side for manual draws
+- ✅ Points redemption: supporter badges (instant) and Steam gift cards (queued for manual fulfillment)
+- ✅ Fully isolated to the /support section — no other page or store touched
+- 🔲 Actually buy Steam keys/gift cards and draw winners from server/data/rewards.json — operator action
+
 ## Housekeeping
 - ✅ Remove Vite template boilerplate
 - ✅ Production build passes (`npm run build`)
