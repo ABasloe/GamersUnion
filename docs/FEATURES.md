@@ -26,6 +26,12 @@ Status legend: ✅ done · 🔲 todo
 - ✅ Holo — futuristic dashboard design (Tailwind: fixed left sidebar, bento stat panels, glassy violet→cyan accents)
 - ✅ Tailwind CSS v4 installed and wired into Vite
 
+## Wireframe-driven design (fourth request)
+- ✅ Pre-design plan + interactive grayscale wireframe kit (4 concepts; see docs/DesignPlan.md)
+- ✅ Hearth design — combines the chosen concepts into one site: River home feed, Campfire "Fires" forum with logbook drawer, TikTok-style /deck card feed with library filmstrip
+- ✅ Extensible design routes (`extras` on DesignDefinition) + discriminated-union feed items — room for future features
+- ✅ Identity styling: warm charcoal/ivory ground; color only as meaning (ember = community heat, sage = you); no purple/blue, no newspaper, no rule-of-three rhythms
+
 ## Launcher account linking (third request)
 - ✅ Backend (`server/`, Express + TypeScript): Steam OpenID sign-in + Steam Web API library proxy
 - ✅ "Sign in through Steam" flow — real OpenID 2.0 with server-side verification

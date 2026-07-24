@@ -15,6 +15,9 @@ function DesignRoutes() {
         <Route path="/groups" element={<P.Groups />} />
         <Route path="/groups/:id" element={<P.GroupDetail />} />
         <Route path="/profile" element={<P.Profile />} />
+        {design.extras?.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
       </Route>
     </Routes>
   );

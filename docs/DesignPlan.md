@@ -23,4 +23,4 @@ Interactive wireframe kit: https://claude.ai/code/artifact/ae033eea-a724-49b3-9d
 ## Studio recommendation
 Take **River** (momentum) + **Dossier** (control) if only two graduate; **Deck** is the high-risk/high-signature pick; **Campfire** is the boldest reframe but buries tracking one level deep.
 
-Status: 🔲 awaiting concept selection before any visual design begins.
+Status: ✅ concepts selected — River + Campfire + Deck combined into the **Hearth** design (`web/src/designs/hearth/`): River = homepage feed, Campfire = Fires forum pages, Deck = /deck swipe feed. Dossier remains on the shelf as a future power-user mode.

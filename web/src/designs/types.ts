@@ -21,4 +21,6 @@ export interface DesignDefinition {
   label: string;
   blurb: string;
   pages: DesignPages;
+  /** Design-specific routes beyond the shared seven (e.g. a /deck feed). */
+  extras?: { path: string; Component: ComponentType }[];
 }
