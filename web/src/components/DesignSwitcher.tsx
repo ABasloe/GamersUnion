@@ -10,7 +10,7 @@ export function DesignSwitcher({ className }: { className?: string }) {
   const { designId, setDesignId } = useDesign();
   return (
     <label className={className ?? 'design-switcher'} title="UI design tester — switch the whole site design">
-      🎨
+      <span>design</span>
       <select value={designId} onChange={(e) => setDesignId(e.target.value)} aria-label="Site design">
         {DESIGNS.map((d) => (
           <option key={d.id} value={d.id}>{d.label} — {d.blurb}</option>

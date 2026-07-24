@@ -10,7 +10,7 @@ import { Profile } from './Profile';
 /** Holo — futuristic dashboard: left sidebar, glassy bento panels, violet→cyan accent. */
 export const holo: DesignDefinition = {
   id: 'holo',
-  label: '🛰️ Holo',
+  label: 'Holo',
   blurb: 'Futuristic dashboard — sidebar and panels',
   pages: { Layout, Home, Browse, GameDetail, Library, Groups, GroupDetail, Profile },
 };

@@ -11,7 +11,7 @@ import { Deck } from './Deck';
 /** Hearth — river home, campfire forums, one-card deck feed. */
 export const hearth: DesignDefinition = {
   id: 'hearth',
-  label: '🔥 Hearth',
+  label: 'Hearth',
   blurb: 'River home, campfire forums, deck feed',
   pages: { Layout, Home, Browse, GameDetail, Library, Groups, GroupDetail, Profile },
   extras: [{ path: '/deck', Component: Deck }],

@@ -4,14 +4,15 @@ import { Home } from './Home';
 import { Browse } from './Browse';
 import { GameDetail } from './GameDetail';
 import { Library } from './Library';
-import { Groups } from './Groups';
-import { GroupDetail } from './GroupDetail';
+import { Groups, GroupDetail } from './Fires';
 import { Profile } from './Profile';
+import { Deck } from './Deck';
 
-/** Atlas — professional editorial light design: paper, serif mastheads, hairline rules. */
-export const atlas: DesignDefinition = {
-  id: 'atlas',
-  label: 'Atlas',
-  blurb: 'Editorial light — literary and calm',
+/** Union — the flagship: angular river home, campfire forums, deck feed. */
+export const union: DesignDefinition = {
+  id: 'union',
+  label: 'Union',
+  blurb: 'Flagship — angular river, fires, deck',
   pages: { Layout, Home, Browse, GameDetail, Library, Groups, GroupDetail, Profile },
+  extras: [{ path: '/deck', Component: Deck }],
 };

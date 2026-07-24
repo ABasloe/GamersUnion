@@ -43,6 +43,13 @@ Status legend: ✅ done · 🔲 todo
 - 🔲 Real import needs a `STEAM_API_KEY` env var on the server (free: steamcommunity.com/dev/apikey) — user action
 - 🔲 Future: GOG/Epic linking, persistent server-side accounts
 
+## Union flagship design (sixth request — web-design skill rehaul)
+- ✅ Union design: merges the liked pieces — angular notched geometry app-wide, River home, Fires forum, Deck feed, Signal-style Browse, Support page — one token system, each section keeps its layout identity
+- ✅ Skill compliance: zero emojis, no gradients (hard two-tone cover plates + type monograms), no newspaper, no purple/blue, no rule-of-three groupings
+- ✅ Real typography: Chakra Petch display / Public Sans body / IBM Plex Mono data (self-hosted via fontsource)
+- ✅ Signature element: "the current" — river spine line on Home, reappearing as ember heat gauges at the Fires
+- ✅ Union is now the default design; previous four remain in the design tester
+
 ## Support-us ads (fifth request)
 - ✅ Backend ad service: GET /api/ads/next (rotating house ads), POST /api/ads/:id/event (impression/complete), GET /api/ads/stats; events persisted to server/data/ad-events.json
 - ✅ /support page in every design: ad player with countdown + progress bar, community stats (views, estimated support)

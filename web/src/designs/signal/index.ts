@@ -11,7 +11,7 @@ import { Profile } from '../../pages/Profile';
 /** Signal — the original angular dark design (custom CSS in index.css). */
 export const signal: DesignDefinition = {
   id: 'signal',
-  label: '⚡ Signal',
+  label: 'Signal',
   blurb: 'Angular dark — sharp notched edges',
   pages: { Layout, Home, Browse, GameDetail, Library, Groups, GroupDetail, Profile },
 };
