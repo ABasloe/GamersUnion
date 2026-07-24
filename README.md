@@ -15,7 +15,11 @@ Goodreads / MyAnimeList / Letterboxd — but for video games. Track what you've 
 
 All state persists in localStorage. See `docs/FEATURES.md` for the feature tracker.
 
+- **Account linking** — sign in through Steam (real OpenID) and import your library with hours played; Ubisoft Connect account linking.
+
 ## Running
+
+Frontend:
 
 ```bash
 cd web
@@ -24,4 +28,21 @@ npm run dev      # http://localhost:5173
 npm run build    # production build in web/dist
 ```
 
-Built with React + Vite + TypeScript.
+Backend (Steam login + library import):
+
+```bash
+cd server
+npm install
+npm run dev      # http://localhost:8787 (frontend proxies /api and /auth to it)
+```
+
+Steam sign-in works out of the box. For real library import, set a free Steam Web API key
+(https://steamcommunity.com/dev/apikey) before starting the server:
+
+```powershell
+$env:STEAM_API_KEY = "YOUR_KEY"; npm run dev
+```
+
+Without a key, the site clearly says so and offers a demo import instead.
+
+Built with React + Vite + TypeScript, Express on the server.
