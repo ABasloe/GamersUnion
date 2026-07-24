@@ -48,7 +48,9 @@ Status legend: ✅ done · 🔲 todo
 - ✅ Skill compliance: zero emojis, no gradients (hard two-tone cover plates + type monograms), no newspaper, no purple/blue, no rule-of-three groupings
 - ✅ Real typography: Chakra Petch display / Public Sans body / IBM Plex Mono data (self-hosted via fontsource)
 - ✅ Signature element: "the current" — river spine line on Home, reappearing as ember heat gauges at the Fires
-- ✅ Union is now the default design; previous four remain in the design tester
+- ✅ Union is now the ONLY design — Signal/Atlas/Holo/Hearth deleted per feedback ("they are all ass")
+- ✅ Design switcher replaced by a THEME picker for Union: Graphite (neutral dark, default), Pine, Void, Porcelain (light) — CSS-variable tokens, persisted choice
+- ✅ Brown/orange background hue removed; ground colors are neutral (heat accent is now ember red, not copper)
 
 ## Support-us ads (fifth request)
 - ✅ Backend ad service: GET /api/ads/next (rotating house ads), POST /api/ads/:id/event (impression/complete), GET /api/ads/stats; events persisted to server/data/ad-events.json

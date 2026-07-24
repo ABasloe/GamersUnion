@@ -80,7 +80,7 @@ export function Deck() {
         </p>
       </div>
 
-      <div className="border-t" style={{ borderColor: LINE, background: '#12100d' }}>
+      <div className="border-t" style={{ borderColor: LINE, background: 'var(--gu-ground)' }}>
         <button
           onClick={() => setStrip(!strip)}
           className={`flex w-full cursor-pointer items-center gap-3 border-none bg-transparent px-5 py-2 text-left text-xs ${focusRing}`}

@@ -44,8 +44,8 @@ export function Library() {
             style={{
               clipPath: SLANT,
               ...DISPLAY,
-              background: filter === s ? MOSS : '#211d16',
-              color: filter === s ? '#12100d' : MUTED,
+              background: filter === s ? MOSS : 'var(--gu-raised)',
+              color: filter === s ? 'var(--gu-ground)' : MUTED,
             }}
           >
             {s === 'all' ? `all (${app.library.length})` : `${STATUS_LABELS[s].toLowerCase()} (${app.library.filter((e) => e.status === s).length})`}
@@ -94,7 +94,7 @@ export function Library() {
                 </label>
                 <button
                   className={`cursor-pointer border-none bg-transparent p-0 text-xs ${focusRing}`}
-                  style={{ color: '#b5484d' }}
+                  style={{ color: 'var(--gu-danger)' }}
                   onClick={() => app.setStatus(e.gameId, null)}
                 >
                   remove

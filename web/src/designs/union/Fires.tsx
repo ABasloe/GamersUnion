@@ -113,7 +113,7 @@ export function GroupDetail() {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-8 pb-36">
-      <Link to="/groups" className={`text-xs hover:text-[#e3ddd2] ${focusRing}`} style={{ color: MUTED }}>
+      <Link to="/groups" className={`text-xs hover:text-[var(--gu-text)] ${focusRing}`} style={{ color: MUTED }}>
         back to the fires
       </Link>
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
@@ -189,7 +189,7 @@ export function LogbookDrawer() {
               </Link>
             ) : null;
           })}
-          <Link to="/library" className={`text-sm hover:text-[#e3ddd2] ${focusRing}`} style={{ color: MUTED }}>
+          <Link to="/library" className={`text-sm hover:text-[var(--gu-text)] ${focusRing}`} style={{ color: MUTED }}>
             full logbook
           </Link>
         </div>

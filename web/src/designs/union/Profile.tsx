@@ -171,7 +171,7 @@ function TetheredAccounts() {
     <section className="mt-10">
       <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: MUTED, ...DISPLAY }}>tethered accounts</p>
       {message && (
-        <p className="mt-2 text-sm" style={{ color: message.kind === 'ok' ? MOSS : '#b5484d' }}>{message.text}</p>
+        <p className="mt-2 text-sm" style={{ color: message.kind === 'ok' ? MOSS : 'var(--gu-danger)' }}>{message.text}</p>
       )}
 
       <Panel edge={MOSS} className="mt-3 p-4">
@@ -199,7 +199,7 @@ function TetheredAccounts() {
               <a
                 href="/auth/steam"
                 className={`inline-block cursor-pointer border px-3.5 py-1.5 text-sm ${focusRing}`}
-                style={{ clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)', ...DISPLAY, borderColor: MOSS, background: MOSS, color: '#12100d' }}
+                style={{ clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)', ...DISPLAY, borderColor: MOSS, background: MOSS, color: 'var(--gu-ground)' }}
               >
                 sign in through steam
               </a>

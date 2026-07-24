@@ -1,38 +1,33 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AppProvider } from './store/AppContext';
-import { DesignProvider, useDesign } from './designs/DesignContext';
+import { Layout } from './designs/union/Layout';
+import { Home } from './designs/union/Home';
+import { Browse } from './designs/union/Browse';
+import { GameDetail } from './designs/union/GameDetail';
+import { Library } from './designs/union/Library';
+import { Groups, GroupDetail } from './designs/union/Fires';
+import { Profile } from './designs/union/Profile';
+import { Deck } from './designs/union/Deck';
 import { Support } from './pages/Support';
-
-function DesignRoutes() {
-  const { design, designId } = useDesign();
-  const P = design.pages;
-  return (
-    <Routes key={designId}>
-      <Route element={<P.Layout />}>
-        <Route path="/" element={<P.Home />} />
-        <Route path="/browse" element={<P.Browse />} />
-        <Route path="/game/:id" element={<P.GameDetail />} />
-        <Route path="/library" element={<P.Library />} />
-        <Route path="/groups" element={<P.Groups />} />
-        <Route path="/groups/:id" element={<P.GroupDetail />} />
-        <Route path="/profile" element={<P.Profile />} />
-        <Route path="/support" element={<Support />} />
-        {design.extras?.map(({ path, Component }) => (
-          <Route key={path} path={path} element={<Component />} />
-        ))}
-      </Route>
-    </Routes>
-  );
-}
 
 export default function App() {
   return (
     <AppProvider>
-      <DesignProvider>
-        <HashRouter>
-          <DesignRoutes />
-        </HashRouter>
-      </DesignProvider>
+      <HashRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/game/:id" element={<GameDetail />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/groups/:id" element={<GroupDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/deck" element={<Deck />} />
+            <Route path="/support" element={<Support />} />
+          </Route>
+        </Routes>
+      </HashRouter>
     </AppProvider>
   );
 }

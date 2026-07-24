@@ -138,8 +138,8 @@ export function Home() {
               style={{
                 clipPath: SLANT,
                 ...DISPLAY,
-                background: current === c ? MOSS : '#211d16',
-                color: current === c ? '#12100d' : MUTED,
+                background: current === c ? MOSS : 'var(--gu-raised)',
+                color: current === c ? 'var(--gu-ground)' : MUTED,
               }}
             >
               {c === 'all' ? 'everything' : c === 'games' ? 'just games' : 'just talk'}
@@ -231,7 +231,7 @@ function ReviewDrift({ review }: { review: Review }) {
         </Link>{' '}
         · <span style={MONO}>{review.rating}/10</span> ·{' '}
         <button
-          className={`cursor-pointer border-none bg-transparent p-0 text-xs hover:text-[#e3ddd2] ${focusRing}`}
+          className={`cursor-pointer border-none bg-transparent p-0 text-xs hover:text-[var(--gu-text)] ${focusRing}`}
           style={{ color: review.likedByMe ? MOSS : MUTED }}
           onClick={() => app.toggleReviewLike(review.id)}
         >

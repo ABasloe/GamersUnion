@@ -137,7 +137,7 @@ function ReviewsTab({ gameId }: { gameId: string }) {
           <p className="mt-1 max-w-2xl text-[15px] leading-relaxed" style={{ color: TEXT }}>{r.text}</p>
           <p className="mt-1.5 flex items-center gap-4 text-xs">
             <button
-              className={`cursor-pointer border-none bg-transparent p-0 hover:text-[#e3ddd2] ${focusRing}`}
+              className={`cursor-pointer border-none bg-transparent p-0 hover:text-[var(--gu-text)] ${focusRing}`}
               style={{ color: r.likedByMe ? MOSS : MUTED }}
               onClick={() => app.toggleReviewLike(r.id)}
             >
@@ -146,7 +146,7 @@ function ReviewsTab({ gameId }: { gameId: string }) {
             {r.isMine && (
               <button
                 className={`cursor-pointer border-none bg-transparent p-0 ${focusRing}`}
-                style={{ color: '#b5484d' }}
+                style={{ color: 'var(--gu-danger)' }}
                 onClick={() => app.deleteMyReview(r.id)}
               >
                 delete

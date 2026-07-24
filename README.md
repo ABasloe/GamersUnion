@@ -11,7 +11,8 @@ Goodreads / MyAnimeList / Letterboxd — but for video games. Track what you've 
 - **Groups** — discussion boards mixed with review clubs; join groups and post to find people to play with.
 - **Profile** — Letterboxd-style Top 3 favorites, your reviews, and **Steam import** (demo mode) that syncs games and hours played.
 - **Similarity score** — tag-based recommendations from what you've rated and favorited.
-- **Design tester** — the 🎨 switcher in the header toggles the whole site between complete design directions (Midnight / Daylight / Arcade) for UX comparison.
+- **Theme picker** — the header selector swaps the Union design's palette: Graphite, Pine, Void, or Porcelain (light).
+- **Deck** — a one-card-at-a-time discovery feed at /deck; the River home feed and the Fires forum round out the Union design.
 
 All state persists in localStorage. See `docs/FEATURES.md` for the feature tracker.
 

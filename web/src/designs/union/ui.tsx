@@ -2,19 +2,19 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { Game, PlayStatus } from '../../types';
 import { STATUS_LABELS, STATUS_ORDER } from '../../components/statusMeta';
 
-/* Union identity tokens.
-   Color is meaning: ember = community heat, moss = you. Everything else
-   stays on the charcoal/bone ground. Shape language: notched corners and
-   slanted chips — never rounded rectangles. */
-export const GROUND = '#12100d';
-export const SURFACE = '#1a1712';
-export const RAISED = '#211d16';
-export const LINE = '#332d23';
-export const TEXT = '#e3ddd2';
-export const MUTED = '#8f8878';
-export const EMBER = '#c46a37';
-export const MOSS = '#98a67d';
-export const DANGER = '#b5484d';
+/* Union identity tokens, resolved through CSS variables so the theme picker
+   can swap palettes at runtime (see themes.ts). Color is meaning: heat =
+   community, you = personal. Everything else stays on the neutral ground.
+   Shape language: notched corners and slanted chips — never rounded rects. */
+export const GROUND = 'var(--gu-ground)';
+export const SURFACE = 'var(--gu-surface)';
+export const RAISED = 'var(--gu-raised)';
+export const LINE = 'var(--gu-line)';
+export const TEXT = 'var(--gu-text)';
+export const MUTED = 'var(--gu-muted)';
+export const EMBER = 'var(--gu-heat)';
+export const MOSS = 'var(--gu-you)';
+export const DANGER = 'var(--gu-danger)';
 
 export const DISPLAY: CSSProperties = { fontFamily: "'Chakra Petch', sans-serif" };
 export const MONO: CSSProperties = { fontFamily: "'IBM Plex Mono', monospace", fontVariantNumeric: 'tabular-nums' };
@@ -24,13 +24,13 @@ export const NOTCH_SM = 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0
 export const SLANT = 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)';
 
 export const focusRing =
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#98a67d]';
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gu-you)]';
 
 export const inputCls =
-  `w-full border bg-transparent px-2.5 py-1.5 text-sm placeholder:text-[#6d675a] focus:outline-none focus:border-[#98a67d] border-[#332d23] text-[#e3ddd2]`;
+  `w-full border bg-transparent px-2.5 py-1.5 text-sm placeholder:text-[var(--gu-faint)] focus:outline-none focus:border-[var(--gu-you)] border-[var(--gu-line)] text-[var(--gu-text)]`;
 
 export const selectCls =
-  `border bg-[#1a1712] px-2 py-1.5 text-sm focus:outline-none focus:border-[#98a67d] border-[#332d23] text-[#e3ddd2]`;
+  `border bg-[var(--gu-surface)] px-2 py-1.5 text-sm focus:outline-none focus:border-[var(--gu-you)] border-[var(--gu-line)] text-[var(--gu-text)]`;
 
 export function Btn({
   children,
