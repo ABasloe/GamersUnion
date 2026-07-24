@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Group, LibraryEntry, PlayStatus, Review, Thread } from '../types';
+import type { Connections, Group, LibraryEntry, PlayStatus, Review, Thread } from '../types';
 import { SEED_GROUPS, SEED_REVIEWS, SEED_THREADS, STEAM_IMPORT } from '../data/seed';
 
 interface AppState {
@@ -12,6 +12,7 @@ interface AppState {
   favorites: string[]; // up to 3 game ids
   steamImported: boolean;
   username: string;
+  connections: Connections;
 }
 
 interface AppActions {
@@ -28,6 +29,11 @@ interface AppActions {
   toggleFavorite: (gameId: string) => void;
   importSteam: () => void;
   setUsername: (name: string) => void;
+  linkSteam: (steamId: string, personaName?: string) => void;
+  unlinkSteam: () => void;
+  linkUbisoft: (username: string) => void;
+  unlinkUbisoft: () => void;
+  applySteamLibrary: (items: { gameId: string; hours: number }[], unmatched: number) => void;
 }
 
 const STORAGE_KEY = 'gamers-union-state-v1';
@@ -40,6 +46,7 @@ const defaultState: AppState = {
   favorites: [],
   steamImported: false,
   username: 'Player One',
+  connections: { steam: null, ubisoft: null },
 };
 
 function loadState(): AppState {
@@ -159,6 +166,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
           return { ...s, library, steamImported: true };
         }),
       setUsername: (name) => setState((s) => ({ ...s, username: name })),
+      linkSteam: (steamId, personaName) =>
+        setState((s) => ({
+          ...s,
+          connections: {
+            ...s.connections,
+            steam: { steamId, personaName, linkedAt: today(), lastImport: s.connections.steam?.lastImport ?? null },
+          },
+        })),
+      unlinkSteam: () =>
+        setState((s) => ({ ...s, connections: { ...s.connections, steam: null } })),
+      linkUbisoft: (username) =>
+        setState((s) => ({ ...s, connections: { ...s.connections, ubisoft: { username, linkedAt: today() } } })),
+      unlinkUbisoft: () =>
+        setState((s) => ({ ...s, connections: { ...s.connections, ubisoft: null } })),
+      applySteamLibrary: (items, unmatched) =>
+        setState((s) => {
+          let library = [...s.library];
+          for (const item of items) {
+            const existing = library.find((e) => e.gameId === item.gameId);
+            library = existing
+              ? library.map((e) => (e.gameId === item.gameId ? { ...e, hoursPlayed: item.hours, fromSteam: true } : e))
+              : [...library, { gameId: item.gameId, status: 'played' as PlayStatus, rating: null, hoursPlayed: item.hours, addedAt: today(), fromSteam: true }];
+          }
+          const steam = s.connections.steam
+            ? { ...s.connections.steam, lastImport: { matched: items.length, unmatched, date: today() } }
+            : s.connections.steam;
+          return { ...s, library, steamImported: true, connections: { ...s.connections, steam } };
+        }),
     };
   }, []);
 

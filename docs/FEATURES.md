@@ -22,6 +22,17 @@ Status legend: ✅ done · 🔲 todo
 - ✅ Multiple distinct designs: Midnight (dark), Daylight (light/Goodreads-ish), Arcade (retro CRT)
 - ✅ Toggle accessible from the site header; choice persisted across reloads
 
+## Launcher account linking (third request)
+- ✅ Backend (`server/`, Express + TypeScript): Steam OpenID sign-in + Steam Web API library proxy
+- ✅ "Sign in through Steam" flow — real OpenID 2.0 with server-side verification
+- ✅ Manual SteamID64 linking as fallback
+- ✅ Real library import: maps Steam appids to catalog, syncs hours to My Games, reports unmatched count
+- ✅ Graceful degradation: clear message + demo import when STEAM_API_KEY isn't configured
+- ✅ Ubisoft Connect account linking (no public library API exists, so import is honestly marked unavailable)
+- ✅ Vite dev proxy so frontend talks to backend on relative URLs
+- 🔲 Real import needs a `STEAM_API_KEY` env var on the server (free: steamcommunity.com/dev/apikey) — user action
+- 🔲 Future: GOG/Epic linking, persistent server-side accounts
+
 ## Housekeeping
 - ✅ Remove Vite template boilerplate
 - ✅ Production build passes (`npm run build`)

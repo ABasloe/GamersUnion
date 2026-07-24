@@ -3,26 +3,18 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../store/AppContext';
 import { getGame } from '../data/games';
 import { GameCover } from '../components/GameCover';
+import { Connections } from '../components/Connections';
 import { getRecommendations } from '../utils/similarity';
 
 export function Profile() {
   const app = useApp();
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState(app.username);
-  const [importing, setImporting] = useState(false);
 
   const favorites = app.favorites.map(getGame).filter((g) => g != null);
   const myReviews = app.reviews.filter((r) => r.isMine);
   const joinedGroups = app.groups.filter((g) => g.joined);
   const recs = getRecommendations(app.library, app.favorites).slice(0, 6);
-
-  const runImport = () => {
-    setImporting(true);
-    setTimeout(() => {
-      app.importSteam();
-      setImporting(false);
-    }, 1200);
-  };
 
   return (
     <div>
@@ -57,20 +49,7 @@ export function Profile() {
         )}
       </section>
 
-      <section>
-        <h2>🎮 Steam Import</h2>
-        {app.steamImported ? (
-          <p className="muted">✅ Steam library imported — playtime hours synced to <Link to="/library">My Games</Link>.</p>
-        ) : (
-          <div className="compose-box">
-            <p>Connect your Steam account to import your games and hours played.</p>
-            <button className="btn btn-primary" onClick={runImport} disabled={importing}>
-              {importing ? 'Importing…' : 'Import Steam Library'}
-            </button>
-            <p className="muted">Demo mode: imports a sample Steam library. Real Steam OAuth requires a backend.</p>
-          </div>
-        )}
-      </section>
+      <Connections />
 
       {recs.length > 0 && (
         <section>

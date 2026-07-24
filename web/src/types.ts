@@ -6,6 +6,7 @@ export interface Game {
   platforms: string[];
   tags: string[];
   description: string;
+  steamAppId?: number;
   communityRating: number; // 0-10
   ratingsCount: number;
   trendingScore: number;
@@ -60,6 +61,23 @@ export interface Group {
   members: number;
   joined: boolean;
   posts: ThreadPost[];
+}
+
+export interface SteamConnection {
+  steamId: string;
+  personaName?: string;
+  linkedAt: string;
+  lastImport?: { matched: number; unmatched: number; date: string } | null;
+}
+
+export interface UbisoftConnection {
+  username: string;
+  linkedAt: string;
+}
+
+export interface Connections {
+  steam: SteamConnection | null;
+  ubisoft: UbisoftConnection | null;
 }
 
 export interface NewsItem {

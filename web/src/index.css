@@ -193,6 +193,16 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .group-foot { display: flex; justify-content: space-between; align-items: center; }
 .group-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
+/* Connections */
+.connection-card { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+.connection-head { display: flex; align-items: center; gap: 0.6rem; }
+.connection-head h3 { margin: 0; }
+.manual-link { margin-top: 0.6rem; width: 100%; }
+.manual-link summary { cursor: pointer; }
+.manual-link .reply-row input { min-width: 260px; }
+.msg-ok { color: var(--accent-2); font-weight: 600; }
+.msg-err { color: var(--danger); font-weight: 600; }
+
 /* Profile */
 .profile-head { display: flex; gap: 1rem; align-items: center; }
 .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--bg-hover); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
