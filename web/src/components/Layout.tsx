@@ -15,6 +15,7 @@ export function Layout() {
           <NavLink to="/browse">Browse</NavLink>
           <NavLink to="/library">My Games</NavLink>
           <NavLink to="/groups">Groups</NavLink>
+          <NavLink to="/support">♥ Support</NavLink>
           <NavLink to="/profile" className="nav-profile">👤 {username}</NavLink>
         </nav>
         <DesignSwitcher />

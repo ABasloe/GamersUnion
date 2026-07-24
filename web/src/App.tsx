@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AppProvider } from './store/AppContext';
 import { DesignProvider, useDesign } from './designs/DesignContext';
+import { Support } from './pages/Support';
 
 function DesignRoutes() {
   const { design, designId } = useDesign();
@@ -15,6 +16,7 @@ function DesignRoutes() {
         <Route path="/groups" element={<P.Groups />} />
         <Route path="/groups/:id" element={<P.GroupDetail />} />
         <Route path="/profile" element={<P.Profile />} />
+        <Route path="/support" element={<Support />} />
         {design.extras?.map(({ path, Component }) => (
           <Route key={path} path={path} element={<Component />} />
         ))}

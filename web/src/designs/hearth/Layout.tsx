@@ -10,6 +10,7 @@ const links = [
   { to: '/browse', label: 'Browse' },
   { to: '/library', label: 'Logbook' },
   { to: '/profile', label: 'You' },
+  { to: '/support', label: 'Support' },
 ];
 
 export function Layout() {

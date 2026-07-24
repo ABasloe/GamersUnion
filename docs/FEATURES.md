@@ -43,6 +43,13 @@ Status legend: ✅ done · 🔲 todo
 - 🔲 Real import needs a `STEAM_API_KEY` env var on the server (free: steamcommunity.com/dev/apikey) — user action
 - 🔲 Future: GOG/Epic linking, persistent server-side accounts
 
+## Support-us ads (fifth request)
+- ✅ Backend ad service: GET /api/ads/next (rotating house ads), POST /api/ads/:id/event (impression/complete), GET /api/ads/stats; events persisted to server/data/ad-events.json
+- ✅ /support page in every design: ad player with countdown + progress bar, community stats (views, estimated support)
+- ✅ Nav link ("Support") added to all four designs
+- 🔲 Sign up with a real ad network (AdSense/Unity/etc.) and swap the AD_POOL source — requires business account, user action
+- 🔲 Payments/payouts integration once a network reports real revenue
+
 ## Housekeeping
 - ✅ Remove Vite template boilerplate
 - ✅ Production build passes (`npm run build`)

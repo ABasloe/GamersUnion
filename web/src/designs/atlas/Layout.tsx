@@ -40,6 +40,7 @@ export function Layout() {
           <NavLink to="/library" className={navCls}>My Games</NavLink>
           <NavLink to="/groups" className={navCls}>Groups</NavLink>
           <NavLink to="/profile" className={navCls}>Profile</NavLink>
+          <NavLink to="/support" className={navCls}>Support Us</NavLink>
         </nav>
       </header>
 

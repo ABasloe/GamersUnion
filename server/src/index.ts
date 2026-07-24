@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -10,6 +13,7 @@ const STEAM_API_KEY = process.env.STEAM_API_KEY;
 const STEAM_OPENID = 'https://steamcommunity.com/openid/login';
 
 app.use(cors({ origin: FRONTEND_URL }));
+app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, steamApiConfigured: Boolean(STEAM_API_KEY) });
@@ -121,6 +125,94 @@ app.get('/api/steam/library/:steamId', async (req, res) => {
     console.error('Steam library fetch failed:', err);
     res.status(502).json({ error: 'steam_api_error', message: 'Could not reach the Steam Web API.' });
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* Support-us ads.                                                     */
+/* House ads + server-side impression/completion tracking, persisted   */
+/* to disk. Swapping in a real ad network (AdSense, Unity Ads, etc.)   */
+/* later only means replacing the AD_POOL source — the event tracking, */
+/* stats, and frontend contract stay identical.                        */
+/* ------------------------------------------------------------------ */
+
+interface AdEvent {
+  adId: string;
+  type: 'impression' | 'complete';
+  at: string;
+}
+
+const DATA_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data');
+const EVENTS_FILE = path.join(DATA_DIR, 'ad-events.json');
+// Placeholder eCPM used for the "estimated support" figure until a real
+// network reports actual revenue.
+const ESTIMATED_REVENUE_PER_COMPLETE = 0.004;
+
+const AD_POOL = [
+  { id: 'house-merch', sponsor: 'GamersUnion', title: 'GamersUnion Merch (someday)', body: 'Imaginary hoodies for a very real community. This house ad funds nothing yet — but it proves the pipes work.', durationSec: 15 },
+  { id: 'house-invite', sponsor: 'GamersUnion', title: 'Bring a friend to the fires', body: 'The site gets better with every reviewer. Send someone your profile.', durationSec: 10 },
+  { id: 'house-deck', sponsor: 'GamersUnion', title: 'Tried the Deck yet?', body: 'One game at a time, dealt with a reason. Your next favorite is a few cards in.', durationSec: 10 },
+  { id: 'house-backlog', sponsor: 'GamersUnion', title: 'Your backlog misses you', body: 'That game from the Steam sale of 2023 is still waiting. Log it, rate it, free yourself.', durationSec: 12 },
+];
+
+let adEvents: AdEvent[] = [];
+let eventsLoaded = false;
+let persistQueue: Promise<void> = Promise.resolve();
+
+async function loadEvents() {
+  if (eventsLoaded) return;
+  try {
+    adEvents = JSON.parse(await fs.readFile(EVENTS_FILE, 'utf8')) as AdEvent[];
+  } catch {
+    adEvents = [];
+  }
+  eventsLoaded = true;
+}
+
+function persistEvents() {
+  persistQueue = persistQueue.then(async () => {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(EVENTS_FILE, JSON.stringify(adEvents, null, 2));
+  }).catch((err) => console.error('Failed to persist ad events:', err));
+}
+
+function adStats() {
+  const impressions = adEvents.filter((e) => e.type === 'impression').length;
+  const completes = adEvents.filter((e) => e.type === 'complete').length;
+  return {
+    impressions,
+    completes,
+    estimatedSupportUsd: Math.round(completes * ESTIMATED_REVENUE_PER_COMPLETE * 100) / 100,
+  };
+}
+
+let adCursor = 0;
+app.get('/api/ads/next', async (_req, res) => {
+  await loadEvents();
+  const ad = AD_POOL[adCursor % AD_POOL.length];
+  adCursor += 1;
+  res.json({ ad, stats: adStats() });
+});
+
+app.post('/api/ads/:adId/event', async (req, res) => {
+  await loadEvents();
+  const { adId } = req.params;
+  const type = (req.body as { type?: string } | undefined)?.type;
+  if (!AD_POOL.some((a) => a.id === adId)) {
+    res.status(404).json({ error: 'unknown_ad' });
+    return;
+  }
+  if (type !== 'impression' && type !== 'complete') {
+    res.status(400).json({ error: 'invalid_type', message: "type must be 'impression' or 'complete'." });
+    return;
+  }
+  adEvents.push({ adId, type, at: new Date().toISOString() });
+  persistEvents();
+  res.json({ ok: true, stats: adStats() });
+});
+
+app.get('/api/ads/stats', async (_req, res) => {
+  await loadEvents();
+  res.json(adStats());
 });
 
 app.listen(PORT, () => {

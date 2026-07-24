@@ -9,6 +9,7 @@ const NAV = [
   { to: '/library', label: 'My Games', icon: '▤' },
   { to: '/groups', label: 'Groups', icon: '⬡' },
   { to: '/profile', label: 'Profile', icon: '◉' },
+  { to: '/support', label: 'Support Us', icon: '♥' },
 ];
 
 export function Layout() {
