@@ -5,7 +5,7 @@ import { DesignSwitcher } from './DesignSwitcher';
 export function Layout() {
   const { username } = useApp();
   return (
-    <div className="app-shell">
+    <div className="app-shell design-signal">
       <header className="topbar">
         <NavLink to="/" className="logo">
           🎮 Gamers<span>Union</span>

@@ -1,37 +1,17 @@
-import { useEffect, useState } from 'react';
-
-export const DESIGNS = [
-  { id: 'midnight', label: '🌙 Midnight', blurb: 'Default dark design' },
-  { id: 'daylight', label: '☀️ Daylight', blurb: 'Clean light, Goodreads-inspired' },
-  { id: 'arcade', label: '👾 Arcade', blurb: 'Retro CRT terminal' },
-] as const;
-
-export type DesignId = (typeof DESIGNS)[number]['id'];
-
-const STORAGE_KEY = 'gamers-union-design';
-
-function loadDesign(): DesignId {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  return DESIGNS.some((d) => d.id === saved) ? (saved as DesignId) : 'midnight';
-}
+import { DESIGNS } from '../designs';
+import { useDesign } from '../designs/DesignContext';
 
 /**
- * UX/UI design tester: swaps the entire base styling of the site (not just
- * colors) via a data-design attribute on <html>, so testers can compare
- * complete design directions in place.
+ * UX/UI design tester: swaps the ENTIRE site implementation — layout, page
+ * components, and styling — between complete design directions, so testers
+ * can compare whole websites, not just color themes.
  */
-export function DesignSwitcher() {
-  const [design, setDesign] = useState<DesignId>(loadDesign);
-
-  useEffect(() => {
-    document.documentElement.dataset.design = design;
-    localStorage.setItem(STORAGE_KEY, design);
-  }, [design]);
-
+export function DesignSwitcher({ className }: { className?: string }) {
+  const { designId, setDesignId } = useDesign();
   return (
-    <label className="design-switcher" title="UI design tester — switch the whole site design">
+    <label className={className ?? 'design-switcher'} title="UI design tester — switch the whole site design">
       🎨
-      <select value={design} onChange={(e) => setDesign(e.target.value as DesignId)} aria-label="Site design">
+      <select value={designId} onChange={(e) => setDesignId(e.target.value)} aria-label="Site design">
         {DESIGNS.map((d) => (
           <option key={d.id} value={d.id}>{d.label} — {d.blurb}</option>
         ))}

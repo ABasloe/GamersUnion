@@ -17,10 +17,14 @@ Status legend: ✅ done · 🔲 todo
 - ✅ My Games library page with stats and filters
 - ✅ State persisted in localStorage
 
-## Design tester (second request)
-- ✅ Built-in visual UX/UI design switcher (theme-switcher style, but swaps entire base styling)
-- ✅ Multiple distinct designs: Midnight (dark), Daylight (light/Goodreads-ish), Arcade (retro CRT)
-- ✅ Toggle accessible from the site header; choice persisted across reloads
+## Design tester (second request, reworked per feedback)
+- ✅ Built-in visual UX/UI design switcher accessible from the site UI; choice persisted
+- ✅ v2: each design is a COMPLETE separate website implementation (own folder, own layout/components), not just CSS overrides
+- ✅ Design registry + context (`web/src/designs/`), routes swap wholesale per design
+- ✅ Signal — angular dark design, notched corners, no rounded-rectangle soup, blue/teal palette (replaces the old gold/yellow theme per feedback)
+- ✅ Atlas — editorial light Goodreads-like design (Tailwind: newspaper masthead, horizontal shelves, article-style game pages, ink/emerald/paper palette — no yellow/orange)
+- ✅ Holo — futuristic dashboard design (Tailwind: fixed left sidebar, bento stat panels, glassy violet→cyan accents)
+- ✅ Tailwind CSS v4 installed and wired into Vite
 
 ## Launcher account linking (third request)
 - ✅ Backend (`server/`, Express + TypeScript): Steam OpenID sign-in + Steam Web API library proxy
