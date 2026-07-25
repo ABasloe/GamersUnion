@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import type { Game, PlayStatus } from '../../types';
 import { STATUS_LABELS, STATUS_ORDER } from '../../components/statusMeta';
 
@@ -155,6 +156,19 @@ export function StatusSelect({ value, onChange }: { value: PlayStatus | ''; onCh
         </option>
       ))}
     </select>
+  );
+}
+
+/** Every author name links to a public profile, MAL-style. Moss = it's you. */
+export function AuthorLink({ name, mine }: { name: string; mine?: boolean }) {
+  return (
+    <Link
+      to={mine ? '/profile' : `/user/${encodeURIComponent(name)}`}
+      className={`underline-offset-4 hover:underline ${focusRing}`}
+      style={{ color: mine ? MOSS : TEXT }}
+    >
+      {name}
+    </Link>
   );
 }
 

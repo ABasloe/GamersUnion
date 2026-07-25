@@ -4,7 +4,8 @@ import '@fontsource/public-sans/400.css';
 import '@fontsource/public-sans/600.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useApp } from '../../store/AppContext';
 import { ThemePicker } from './ThemePicker';
 import { loadThemeId, saveThemeId, themeStyle } from './themes';
 import { DISPLAY, GROUND, LINE, MOSS, MUTED, TEXT, focusRing } from './ui';
@@ -20,6 +21,7 @@ const LINKS = [
 ];
 
 export function Layout() {
+  const { username } = useApp();
   const [themeId, setThemeId] = useState(loadThemeId);
 
   const pickTheme = (id: string) => {
@@ -59,7 +61,15 @@ export function Layout() {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-4">
+            <Link
+              to="/profile"
+              className={`max-w-40 truncate text-xs underline-offset-4 hover:underline ${focusRing}`}
+              style={{ ...DISPLAY, color: MOSS }}
+              title="Your profile — edit your name there"
+            >
+              {username}
+            </Link>
             <ThemePicker themeId={themeId} onChange={pickTheme} />
           </div>
         </div>

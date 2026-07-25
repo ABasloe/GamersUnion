@@ -165,7 +165,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
           }
           return { ...s, library, steamImported: true };
         }),
-      setUsername: (name) => setState((s) => ({ ...s, username: name })),
+      // Renaming also re-attributes everything you've written, so your
+      // identity stays consistent across reviews, threads, and boards.
+      setUsername: (name) =>
+        setState((s) => ({
+          ...s,
+          username: name,
+          reviews: s.reviews.map((r) => (r.isMine ? { ...r, author: name } : r)),
+          threads: s.threads.map((t) => ({
+            ...t,
+            author: t.posts[0]?.isMine ? name : t.author,
+            posts: t.posts.map((p) => (p.isMine ? { ...p, author: name } : p)),
+          })),
+          groups: s.groups.map((g) => ({
+            ...g,
+            posts: g.posts.map((p) => (p.isMine ? { ...p, author: name } : p)),
+          })),
+        })),
       linkSteam: (steamId, personaName) =>
         setState((s) => ({
           ...s,

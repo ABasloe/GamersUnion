@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useApp } from '../../store/AppContext';
 import { getGame } from '../../data/games';
 import type { Group } from '../../types';
-import { Btn, Chip, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, NOTCH, SURFACE, TEXT, focusRing, inputCls } from './ui';
+import { AuthorLink, Btn, Chip, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, NOTCH, SURFACE, TEXT, focusRing, inputCls } from './ui';
 
 /** Activity score drives the ember gauge and the board ordering. */
 const activityOf = (g: Group) => g.members + g.posts.length * 800 + (g.joined ? 500 : 0);
@@ -75,7 +75,7 @@ function BoardRow({ group, activityPct }: { group: Group; activityPct: number })
         <span className="min-w-0 truncate text-xs" style={{ color: MUTED }}>
           {last ? (
             <>
-              <span style={{ color: last.isMine ? MOSS : TEXT }}>{last.author}</span>
+              <AuthorLink name={last.author} mine={last.isMine} />
               {' · '}
               <span style={MONO}>{last.date}</span>
             </>
@@ -144,8 +144,8 @@ export function GroupDetail() {
         {posts.map((p, i) => (
           <div key={p.id} className="grid border md:grid-cols-[11rem_1fr]" style={{ background: SURFACE, borderColor: LINE }}>
             <div className="border-b p-3 md:border-b-0 md:border-r" style={{ borderColor: LINE }}>
-              <p className="text-sm font-semibold" style={{ ...DISPLAY, color: p.isMine ? MOSS : TEXT }}>
-                {p.author}
+              <p className="text-sm font-semibold" style={DISPLAY}>
+                <AuthorLink name={p.author} mine={p.isMine} />
               </p>
               <p className="mt-0.5 text-[11px]" style={{ color: MUTED, ...MONO }}>
                 {p.date} · #{posts.length - i}

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useApp } from '../../store/AppContext';
 import { GAMES, getGame } from '../../data/games';
 import { getRecommendations } from '../../utils/similarity';
 import type { Game, Review, Thread } from '../../types';
-import { Btn, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, RatingRow, TEXT, focusRing, inputCls } from './ui';
+import { AuthorLink, Btn, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, RatingRow, TEXT, focusRing, inputCls } from './ui';
 
 /* Deck cards are a discriminated union — add new card kinds here. */
 type Card =
@@ -14,32 +14,41 @@ type Card =
 
 export function Deck() {
   const app = useApp();
+  const [searchParams] = useSearchParams();
+  const tag = searchParams.get('tag') ?? '';
   const [i, setI] = useState(0);
   const [strip, setStrip] = useState(false);
 
+  useEffect(() => setI(0), [tag]);
+
   const cards = useMemo<Card[]>(() => {
-    const recs = getRecommendations(app.library, app.favorites);
+    // A tag from Browse narrows the whole deck to that shelf.
+    const inTag = (g: Game) => !tag || g.tags.includes(tag);
+    const recs = getRecommendations(app.library, app.favorites).filter((r) => inTag(r.game));
     const owned = new Set(app.library.map((e) => e.gameId));
+    const fallback = [...GAMES]
+      .sort((a, b) => b.trendingScore - a.trendingScore)
+      .filter((g) => inTag(g) && !owned.has(g.id));
     const gameCards: Card[] = (recs.length > 0
       ? recs.slice(0, 8).map((r) => ({
           kind: 'game' as const,
           game: r.game,
           why: `dealt because your logbook leans ${r.matchedTags.slice(0, 2).join(' and ')} · ${r.score}% match`,
         }))
-      : [...GAMES].sort((a, b) => b.trendingScore - a.trendingScore).filter((g) => !owned.has(g.id)).slice(0, 8).map((g) => ({
+      : fallback.slice(0, 8).map((g) => ({
           kind: 'game' as const,
           game: g,
-          why: 'dealt because the whole river is talking about it',
+          why: tag ? `dealt from the ${tag.toLowerCase()} shelf you were browsing` : 'dealt because the whole river is talking about it',
         })));
     const reviewCards: Card[] = [...app.reviews]
       .sort((a, b) => b.likes - a.likes)
-      .slice(0, 6)
       .map((review) => ({ kind: 'review' as const, review, game: getGame(review.gameId)! }))
-      .filter((c) => c.game);
+      .filter((c) => c.game && inTag(c.game))
+      .slice(0, 6);
     const threadCards: Card[] = app.threads
-      .slice(0, 5)
       .map((thread) => ({ kind: 'thread' as const, thread, game: getGame(thread.gameId)! }))
-      .filter((c) => c.game);
+      .filter((c) => c.game && inTag(c.game))
+      .slice(0, 5);
 
     const deck: Card[] = [];
     const max = Math.max(gameCards.length, reviewCards.length, threadCards.length);
@@ -50,7 +59,7 @@ export function Deck() {
     }
     return deck;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tag]);
 
   const advance = (d: number) => setI((v) => Math.min(Math.max(v + d, 0), cards.length - 1));
 
@@ -69,7 +78,25 @@ export function Deck() {
 
   return (
     <div className="flex h-[calc(100vh-110px)] flex-col">
+      {tag && (
+        <p className="border-b px-5 py-2 text-xs" style={{ borderColor: LINE, color: MUTED }}>
+          dealing only <span style={{ color: EMBER }}>{tag.toLowerCase()}</span> ·{' '}
+          <Link to={`/browse?tag=${encodeURIComponent(tag)}`} className={`underline-offset-4 hover:underline ${focusRing}`} style={{ color: TEXT }}>
+            view as grid in browse
+          </Link>{' '}
+          ·{' '}
+          <Link to="/deck" className={`underline-offset-4 hover:underline ${focusRing}`} style={{ color: TEXT }}>
+            deal the full deck
+          </Link>
+        </p>
+      )}
       <div className="relative min-h-0 flex-1">
+        {!card && (
+          <p className="px-6 py-10 text-sm" style={{ color: MUTED }}>
+            Nothing to deal here yet — try{' '}
+            <Link to="/deck" className={`underline underline-offset-4 ${focusRing}`} style={{ color: TEXT }}>the full deck</Link>.
+          </p>
+        )}
         {card && <CardFace card={card} onAdvance={() => advance(1)} />}
         <div className="absolute right-5 top-1/2 flex -translate-y-1/2 flex-col gap-2">
           <Btn ariaLabel="Previous card" onClick={() => advance(-1)} disabled={i === 0}>prev</Btn>
@@ -152,6 +179,13 @@ function CardFace({ card, onAdvance }: { card: Card; onAdvance: () => void }) {
               <Link to={`/game/${game.id}`} className={`text-xs underline-offset-4 hover:underline ${focusRing}`} style={{ color: MUTED }}>
                 full page
               </Link>
+              <Link
+                to={`/browse?tag=${encodeURIComponent(game.tags[0])}`}
+                className={`text-xs underline-offset-4 hover:underline ${focusRing}`}
+                style={{ color: MUTED }}
+              >
+                more {game.tags[0].toLowerCase()} in browse
+              </Link>
             </div>
           </>
         )}
@@ -163,7 +197,8 @@ function CardFace({ card, onAdvance }: { card: Card; onAdvance: () => void }) {
               "{card.review.text}"
             </blockquote>
             <p className="mt-3 text-sm" style={{ color: MUTED }}>
-              {card.review.author} · <span style={MONO}>{card.review.rating}/10</span> on{' '}
+              <AuthorLink name={card.review.author} mine={card.review.isMine} /> ·{' '}
+              <span style={MONO}>{card.review.rating}/10</span> on{' '}
               <Link to={`/game/${game.id}`} className={`underline-offset-4 hover:underline ${focusRing}`} style={{ color: TEXT }}>
                 {game.title}
               </Link>

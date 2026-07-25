@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { GAMES } from '../../data/games';
 import { useApp } from '../../store/AppContext';
 import { STATUS_LABELS } from '../../components/statusMeta';
@@ -9,11 +9,14 @@ type SortKey = 'trending' | 'rating' | 'title' | 'year';
 
 export function Browse() {
   const { library } = useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tag = searchParams.get('tag') ?? '';
   const [query, setQuery] = useState('');
-  const [tag, setTag] = useState('');
   const [sort, setSort] = useState<SortKey>('trending');
 
   const allTags = useMemo(() => [...new Set(GAMES.flatMap((g) => g.tags))].sort(), []);
+
+  const setTag = (t: string) => setSearchParams(t ? { tag: t } : {}, { replace: true });
 
   const games = useMemo(() => {
     let list = GAMES.filter((g) => g.title.toLowerCase().includes(query.toLowerCase()));
@@ -29,7 +32,16 @@ export function Browse() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
-      <h1 className="text-2xl font-semibold" style={DISPLAY}>Browse</h1>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h1 className="text-2xl font-semibold" style={DISPLAY}>Browse</h1>
+        <Link
+          to={tag ? `/deck?tag=${encodeURIComponent(tag)}` : '/deck'}
+          className={`text-xs underline-offset-4 hover:underline ${focusRing}`}
+          style={{ ...DISPLAY, color: MOSS }}
+        >
+          shuffle {tag ? `${tag.toLowerCase()} ` : 'these '}into the deck
+        </Link>
+      </div>
       <div className="mt-4 flex flex-wrap gap-2">
         <input
           type="search"

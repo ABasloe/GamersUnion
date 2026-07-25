@@ -66,6 +66,14 @@ Status legend: ✅ done · 🔲 todo
 - ✅ Fully isolated to the /support section — no other page or store touched
 - 🔲 Actually buy Steam keys/gift cards and draw winners from server/data/rewards.json — operator action
 
+## Identity, profiles & integration polish (eighth batch)
+- ✅ Fires renamed to Forum with a traditional forum layout (board index columns, author-rail post rows)
+- ✅ Username shown in the header; renaming yourself re-attributes all your past reviews/threads/posts
+- ✅ MAL-style public profiles at /user/:name — favorites, logbook, reviews, forum activity; every author name links there
+- ✅ Seeded community member profiles (data/users.ts)
+- ✅ Support page restyled through Union theme variables so all four themes fit (incl. Porcelain light)
+- ✅ Deck ↔ Browse integration: Browse "shuffle into the deck" (carries the tag filter), Deck ?tag= dealing with "view as grid" and per-card "more like this in browse" links
+
 ## Housekeeping
 - ✅ Remove Vite template boilerplate
 - ✅ Production build passes (`npm run build`)

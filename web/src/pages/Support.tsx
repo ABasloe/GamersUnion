@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Btn, DISPLAY, EMBER, GROUND, LINE, MONO, MOSS, MUTED, NOTCH, SURFACE, TEXT } from '../designs/union/ui';
 
 interface Ad {
   id: string;
@@ -54,10 +55,21 @@ function supporterId(): string {
   return id;
 }
 
+function Card({ children, edge }: { children: React.ReactNode; edge?: string }) {
+  return (
+    <div
+      className="border p-7"
+      style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE, borderLeft: edge ? `3px solid ${edge}` : undefined }}
+    >
+      {children}
+    </div>
+  );
+}
+
 /**
  * The Support hub: watch ads to earn raffle tickets (Steam-key giveaways)
- * and points (gift cards, badges). Deliberately self-contained — nothing
- * here leaks into the rest of the app.
+ * and points (gift cards, badges). Styled entirely through the Union theme
+ * variables so it follows every theme, light or dark.
  */
 export function Support() {
   const [ad, setAd] = useState<Ad | null>(null);
@@ -150,137 +162,135 @@ export function Support() {
   const badgeTitle = (id: string) => config?.catalog.find((c) => c.id === id)?.title ?? id;
 
   return (
-    <div className="mx-auto my-8 flex w-full max-w-2xl flex-col gap-6 px-4">
-      <div className="rounded-sm bg-zinc-900 p-8 text-zinc-100 ring-1 ring-zinc-700">
-        <p className="text-xs uppercase tracking-widest text-zinc-400">Support GamersUnion</p>
-        <h1 className="mt-2 font-serif text-3xl text-zinc-50">Watch an ad, earn your way into the raffles</h1>
-        <p className="mt-3 max-w-prose text-sm leading-relaxed text-zinc-300">
-          Every completed ad earns you {config?.earning.ticketsPerAd ?? 1} raffle ticket and{' '}
-          {config?.earning.pointsPerAd ?? 10} points. Tickets enter Steam-key giveaways we fund from ad
-          revenue; points redeem gift cards and supporter badges. These are house ads while we court
-          real sponsors, but everything you earn now is real and carries over.
+    <div className="mx-auto my-8 flex w-full max-w-2xl flex-col gap-5 px-4" style={{ color: TEXT }}>
+      <Card edge={MOSS}>
+        <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: MUTED, ...DISPLAY }}>support GamersUnion</p>
+        <h1 className="mt-2 text-2xl font-semibold" style={DISPLAY}>Watch an ad, earn your way into the raffles</h1>
+        <p className="mt-3 max-w-prose text-sm leading-relaxed" style={{ color: MUTED }}>
+          GamersUnion is free and has no paywalls. Every completed ad earns you{' '}
+          {config?.earning.ticketsPerAd ?? 1} raffle ticket and {config?.earning.pointsPerAd ?? 10} points.
+          Tickets enter Steam-key giveaways funded by ad revenue; points redeem gift cards and supporter
+          badges. These are house ads while we court real sponsors — everything you earn now is real and
+          carries over.
         </p>
 
         {/* Wallet */}
-        <div className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-y border-zinc-800 py-4">
+        <div className="mt-5 flex flex-wrap gap-x-10 gap-y-3 border-y py-4" style={{ borderColor: LINE }}>
           <div>
-            <p className="text-2xl font-semibold tabular-nums text-emerald-400">{rewards ? rewards.tickets : '—'}</p>
-            <p className="text-xs text-zinc-400">raffle tickets</p>
+            <p className="text-2xl font-semibold" style={{ color: MOSS, ...MONO }}>{rewards ? rewards.tickets : '—'}</p>
+            <p className="text-xs" style={{ color: MUTED }}>raffle tickets</p>
           </div>
           <div>
-            <p className="text-2xl font-semibold tabular-nums text-emerald-400">{rewards ? rewards.points : '—'}</p>
-            <p className="text-xs text-zinc-400">points</p>
+            <p className="text-2xl font-semibold" style={{ color: MOSS, ...MONO }}>{rewards ? rewards.points : '—'}</p>
+            <p className="text-xs" style={{ color: MUTED }}>points</p>
           </div>
           {rewards && rewards.badges.length > 0 && (
             <div>
               <p className="flex flex-wrap gap-1.5">
                 {rewards.badges.map((b) => (
-                  <span key={b} className="rounded-sm bg-emerald-950 px-2 py-0.5 text-xs text-emerald-300 ring-1 ring-emerald-800">
+                  <span
+                    key={b}
+                    className="border px-2 py-0.5 text-xs"
+                    style={{ borderColor: MOSS, color: MOSS, clipPath: 'polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%)' }}
+                  >
                     {badgeTitle(b)}
                   </span>
                 ))}
               </p>
-              <p className="mt-1 text-xs text-zinc-400">your badges</p>
+              <p className="mt-1 text-xs" style={{ color: MUTED }}>your badges</p>
             </div>
           )}
         </div>
 
-        {notice && <p className="mt-3 text-sm text-amber-300">{notice}</p>}
+        {notice && <p className="mt-3 text-sm" style={{ color: EMBER }}>{notice}</p>}
 
         {/* Ad player */}
-        <div className="mt-5 min-h-44 rounded-sm bg-zinc-950 p-6 ring-1 ring-zinc-800">
+        <div className="mt-5 min-h-44 border p-6" style={{ background: GROUND, borderColor: LINE }}>
           {phase === 'idle' && (
             <div className="flex h-full flex-col items-center justify-center gap-4 py-6">
-              <button
-                onClick={watchAd}
-                className="rounded-sm bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500"
-              >
-                Watch an ad
-              </button>
-              <p className="text-xs text-zinc-500">10-15 seconds. No sound, no tracking cookies.</p>
+              <Btn primary onClick={watchAd}>watch an ad</Btn>
+              <p className="text-xs" style={{ color: 'var(--gu-faint)' }}>10-15 seconds. No sound, no tracking cookies.</p>
             </div>
           )}
-          {phase === 'loading' && <p className="py-10 text-center text-zinc-400">Fetching an ad…</p>}
+          {phase === 'loading' && <p className="py-10 text-center" style={{ color: MUTED }}>Fetching an ad…</p>}
           {phase === 'error' && (
             <div className="py-8 text-center">
-              <p className="text-sm text-rose-300">
+              <p className="text-sm" style={{ color: 'var(--gu-danger)' }}>
                 Couldn't reach the ad server — is the backend running? (npm run dev in server/)
               </p>
-              <button onClick={watchAd} className="mt-3 rounded-sm px-4 py-2 text-sm ring-1 ring-zinc-600 hover:bg-zinc-800">
-                Try again
-              </button>
+              <div className="mt-3 flex justify-center">
+                <Btn onClick={watchAd}>try again</Btn>
+              </div>
             </div>
           )}
           {(phase === 'playing' || phase === 'done') && ad && (
             <div aria-live="polite">
               <div className="flex items-baseline justify-between gap-4">
-                <p className="text-xs uppercase tracking-widest text-amber-400/90">Ad · {ad.sponsor}</p>
+                <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: EMBER, ...DISPLAY }}>ad · {ad.sponsor}</p>
                 {phase === 'playing' ? (
-                  <p className="text-xs tabular-nums text-zinc-400">{secondsLeft}s</p>
+                  <p className="text-xs" style={{ color: MUTED, ...MONO }}>{secondsLeft}s</p>
                 ) : (
-                  <p className="text-xs text-emerald-400">ticket + points earned</p>
+                  <p className="text-xs" style={{ color: MOSS }}>ticket + points earned</p>
                 )}
               </div>
-              <h2 className="mt-3 text-xl font-semibold text-zinc-50">{ad.title}</h2>
-              <p className="mt-2 text-sm text-zinc-300">{ad.body}</p>
-              <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+              <h2 className="mt-3 text-xl font-semibold" style={DISPLAY}>{ad.title}</h2>
+              <p className="mt-2 text-sm" style={{ color: MUTED }}>{ad.body}</p>
+              <div className="mt-5 h-[3px] w-full overflow-hidden" style={{ background: LINE }}>
                 <div
-                  className="h-full bg-emerald-500 transition-all duration-1000 ease-linear"
-                  style={{ width: `${ad.durationSec ? ((ad.durationSec - secondsLeft) / ad.durationSec) * 100 : 0}%` }}
+                  className="h-full motion-safe:transition-all motion-safe:duration-1000 motion-safe:ease-linear"
+                  style={{ width: `${ad.durationSec ? ((ad.durationSec - secondsLeft) / ad.durationSec) * 100 : 0}%`, background: MOSS }}
                 />
               </div>
               {phase === 'done' && (
-                <div className="mt-5 flex items-center justify-between gap-4">
-                  <p className="text-sm text-zinc-300">
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+                  <p className="text-sm" style={{ color: TEXT }}>
                     +{config?.earning.ticketsPerAd ?? 1} ticket, +{config?.earning.pointsPerAd ?? 10} points. Thank you.
                   </p>
-                  <button onClick={watchAd} className="shrink-0 rounded-sm px-4 py-2 text-sm ring-1 ring-zinc-600 hover:bg-zinc-800">
-                    Watch another
-                  </button>
+                  <Btn onClick={watchAd}>watch another</Btn>
                 </div>
               )}
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Raffles */}
-      <div className="rounded-sm bg-zinc-900 p-8 text-zinc-100 ring-1 ring-zinc-700">
-        <h2 className="font-serif text-2xl text-zinc-50">Steam key raffles</h2>
-        <p className="mt-2 max-w-prose text-sm text-zinc-400">
-          Spend tickets for entries. More entries, better odds. Winners are drawn after the end date
-          and announced here; keys are bought from ad revenue.
+      <Card edge={EMBER}>
+        <h2 className="text-xl font-semibold" style={DISPLAY}>Steam key raffles</h2>
+        <p className="mt-2 max-w-prose text-sm" style={{ color: MUTED }}>
+          Spend tickets for entries. More entries, better odds. Winners are drawn after the end date and
+          announced here; keys are bought from ad revenue.
         </p>
         <div className="mt-4 flex flex-col gap-3">
           {(config?.giveaways ?? []).map((g) => (
-            <div key={g.id} className="rounded-sm bg-zinc-950 p-5 ring-1 ring-zinc-800">
+            <div key={g.id} className="border p-5" style={{ background: GROUND, borderColor: LINE }}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-semibold text-zinc-100">{g.title}</h3>
-                <p className="text-xs tabular-nums text-zinc-500">ends {g.endsAt}</p>
+                <h3 className="font-semibold" style={DISPLAY}>{g.title}</h3>
+                <p className="text-xs" style={{ color: MUTED, ...MONO }}>ends {g.endsAt}</p>
               </div>
-              <p className="mt-1 text-sm text-zinc-400">{g.prize}</p>
+              <p className="mt-1 text-sm" style={{ color: MUTED }}>{g.prize}</p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => post(`/api/rewards/giveaways/${g.id}/enter`, { tickets: 1 }, `Entered ${g.title}.`)}
+                <Btn
+                  primary
                   disabled={!rewards || rewards.tickets < 1}
-                  className="rounded-sm bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+                  onClick={() => post(`/api/rewards/giveaways/${g.id}/enter`, { tickets: 1 }, `Entered ${g.title}.`)}
                 >
-                  Enter with 1 ticket
-                </button>
+                  enter with 1 ticket
+                </Btn>
                 {rewards && (rewards.entries[g.id] ?? 0) > 0 && (
-                  <p className="text-xs text-emerald-400">your entries: {rewards.entries[g.id]}</p>
+                  <p className="text-xs" style={{ color: MOSS, ...MONO }}>your entries: {rewards.entries[g.id]}</p>
                 )}
               </div>
             </div>
           ))}
-          {!config && <p className="text-sm text-zinc-500">Raffles load from the server — start the backend to see them.</p>}
+          {!config && <p className="text-sm" style={{ color: MUTED }}>Raffles load from the server — start the backend to see them.</p>}
         </div>
-      </div>
+      </Card>
 
       {/* Rewards catalog */}
-      <div className="rounded-sm bg-zinc-900 p-8 text-zinc-100 ring-1 ring-zinc-700">
-        <h2 className="font-serif text-2xl text-zinc-50">Redeem points</h2>
-        <p className="mt-2 max-w-prose text-sm text-zinc-400">
+      <Card edge={MOSS}>
+        <h2 className="text-xl font-semibold" style={DISPLAY}>Redeem points</h2>
+        <p className="mt-2 max-w-prose text-sm" style={{ color: MUTED }}>
           Badges are granted instantly. Gift cards are queued and fulfilled manually while we're small —
           you'll see the redemption tracked below.
         </p>
@@ -288,31 +298,32 @@ export function Support() {
           {(config?.catalog ?? []).map((item) => {
             const owned = item.kind === 'badge' && rewards?.badges.includes(item.id);
             return (
-              <div key={item.id} className="flex flex-col rounded-sm bg-zinc-950 p-5 ring-1 ring-zinc-800">
+              <div key={item.id} className="flex flex-col border p-5" style={{ background: GROUND, borderColor: LINE }}>
                 <div className="flex items-baseline justify-between gap-2">
-                  <h3 className="font-semibold text-zinc-100">{item.title}</h3>
-                  <p className="text-xs tabular-nums text-zinc-400">{item.cost} pts</p>
+                  <h3 className="font-semibold" style={DISPLAY}>{item.title}</h3>
+                  <p className="text-xs" style={{ color: MUTED, ...MONO }}>{item.cost} pts</p>
                 </div>
-                <p className="mt-1 flex-1 text-sm text-zinc-400">{item.description}</p>
-                <button
-                  onClick={() => post('/api/rewards/redeem', { itemId: item.id }, `Redeemed: ${item.title}.`)}
-                  disabled={owned || !rewards || rewards.points < item.cost}
-                  className="mt-3 self-start rounded-sm px-4 py-1.5 text-sm ring-1 ring-zinc-600 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {owned ? 'Owned' : 'Redeem'}
-                </button>
+                <p className="mt-1 flex-1 text-sm" style={{ color: MUTED }}>{item.description}</p>
+                <div className="mt-3">
+                  <Btn
+                    disabled={owned || !rewards || rewards.points < item.cost}
+                    onClick={() => post('/api/rewards/redeem', { itemId: item.id }, `Redeemed: ${item.title}.`)}
+                  >
+                    {owned ? 'owned' : 'redeem'}
+                  </Btn>
+                </div>
               </div>
             );
           })}
         </div>
         {rewards && rewards.redemptions.length > 0 && (
-          <div className="mt-5 border-t border-zinc-800 pt-4">
-            <p className="text-xs uppercase tracking-widest text-zinc-500">Your redemptions</p>
-            <ul className="mt-2 flex flex-col gap-1 text-sm text-zinc-300">
+          <div className="mt-5 border-t pt-4" style={{ borderColor: LINE }}>
+            <p className="text-[11px] uppercase tracking-[0.14em]" style={{ color: MUTED, ...DISPLAY }}>your redemptions</p>
+            <ul className="mt-2 flex flex-col gap-1 text-sm">
               {rewards.redemptions.map((r, i) => (
                 <li key={i} className="flex justify-between gap-4">
-                  <span>{badgeTitle(r.itemId)}</span>
-                  <span className={r.status === 'pending' ? 'text-amber-300' : 'text-emerald-400'}>
+                  <span style={{ color: TEXT }}>{badgeTitle(r.itemId)}</span>
+                  <span style={{ color: r.status === 'pending' ? EMBER : MOSS }}>
                     {r.status === 'pending' ? 'queued for fulfillment' : 'granted'}
                   </span>
                 </li>
@@ -320,23 +331,21 @@ export function Support() {
             </ul>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Community stats */}
-      <div className="flex flex-wrap gap-x-10 gap-y-3 rounded-sm bg-zinc-900 p-6 text-zinc-100 ring-1 ring-zinc-700">
+      <div className="flex flex-wrap gap-x-10 gap-y-3 border p-6" style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE }}>
         <div>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-50">{stats ? stats.completes : '—'}</p>
-          <p className="text-xs text-zinc-400">ads watched by the community</p>
+          <p className="text-2xl font-semibold" style={MONO}>{stats ? stats.completes : '—'}</p>
+          <p className="text-xs" style={{ color: MUTED }}>ads watched by the community</p>
         </div>
         <div>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-50">
-            {stats ? `$${stats.estimatedSupportUsd.toFixed(2)}` : '—'}
-          </p>
-          <p className="text-xs text-zinc-400">estimated raffle fund (placeholder rate until a real network signs on)</p>
+          <p className="text-2xl font-semibold" style={MONO}>{stats ? `$${stats.estimatedSupportUsd.toFixed(2)}` : '—'}</p>
+          <p className="text-xs" style={{ color: MUTED }}>estimated raffle fund (placeholder rate until a real network signs on)</p>
         </div>
         <div>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-50">{stats ? stats.impressions : '—'}</p>
-          <p className="text-xs text-zinc-400">total ad starts</p>
+          <p className="text-2xl font-semibold" style={MONO}>{stats ? stats.impressions : '—'}</p>
+          <p className="text-xs" style={{ color: MUTED }}>total ad starts</p>
         </div>
       </div>
     </div>

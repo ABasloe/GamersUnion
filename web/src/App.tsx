@@ -7,6 +7,7 @@ import { GameDetail } from './designs/union/GameDetail';
 import { Library } from './designs/union/Library';
 import { Groups, GroupDetail } from './designs/union/Fires';
 import { Profile } from './designs/union/Profile';
+import { UserProfile } from './designs/union/UserProfile';
 import { Deck } from './designs/union/Deck';
 import { Support } from './pages/Support';
 
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/groups" element={<Groups />} />
             <Route path="/groups/:id" element={<GroupDetail />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/user/:name" element={<UserProfile />} />
             <Route path="/deck" element={<Deck />} />
             <Route path="/support" element={<Support />} />
           </Route>

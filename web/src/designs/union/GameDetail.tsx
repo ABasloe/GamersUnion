@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getGame } from '../../data/games';
 import { useApp } from '../../store/AppContext';
-import { Btn, Chip, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, Panel, RatingRow, StatusSelect, TEXT, focusRing, inputCls } from './ui';
+import { AuthorLink, Btn, Chip, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, Panel, RatingRow, StatusSelect, TEXT, focusRing, inputCls } from './ui';
 
 export function GameDetail() {
   const { id } = useParams();
@@ -131,7 +131,7 @@ function ReviewsTab({ gameId }: { gameId: string }) {
       {reviews.map((r) => (
         <div key={r.id} className="pl-4" style={{ borderLeft: `2px solid ${r.isMine ? MOSS : LINE}` }}>
           <p className="text-sm">
-            <span style={{ color: r.isMine ? MOSS : TEXT }}>{r.author}</span>{' '}
+            <AuthorLink name={r.author} mine={r.isMine} />{' '}
             <span style={{ color: MUTED, ...MONO }}>{r.rating}/10 · {r.date}</span>
           </p>
           <p className="mt-1 max-w-2xl text-[15px] leading-relaxed" style={{ color: TEXT }}>{r.text}</p>
@@ -209,7 +209,7 @@ function TalkTab({ gameId }: { gameId: string }) {
             <div className="mt-3 space-y-3 pl-4" style={{ borderLeft: `1px solid ${LINE}` }}>
               {t.posts.map((p) => (
                 <p key={p.id} className="text-sm" style={{ color: MUTED }}>
-                  <span style={{ color: p.isMine ? MOSS : TEXT }}>{p.author}</span> — {p.text}
+                  <AuthorLink name={p.author} mine={p.isMine} /> — {p.text}
                 </p>
               ))}
               <div className="flex gap-2 pt-1">

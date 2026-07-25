@@ -4,7 +4,7 @@ import { useApp } from '../../store/AppContext';
 import { GAMES, getGame } from '../../data/games';
 import { getRecommendations } from '../../utils/similarity';
 import type { Game, Review, Thread } from '../../types';
-import { Btn, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, SLANT, TEXT, focusRing, inputCls, selectCls } from './ui';
+import { AuthorLink, Btn, Cover, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, SLANT, TEXT, focusRing, inputCls, selectCls } from './ui';
 
 /* The river: one continuous interleaved feed hung off a single spine line.
    New item kinds slot into this union and the renderer switch. */
@@ -225,7 +225,7 @@ function ReviewDrift({ review }: { review: Review }) {
     <div>
       <p className="max-w-2xl text-[16px] leading-relaxed">"{review.text}"</p>
       <p className="mt-2 text-xs" style={{ color: MUTED }}>
-        {review.author} on{' '}
+        <AuthorLink name={review.author} mine={review.isMine} /> on{' '}
         <Link to={`/game/${review.gameId}`} className={`underline-offset-4 hover:underline ${focusRing}`} style={{ color: TEXT }}>
           {game?.title}
         </Link>{' '}
@@ -291,7 +291,7 @@ function ThreadDrift({ thread, open, onToggle }: { thread: Thread; open: boolean
         <div className="mt-3 space-y-3 pl-4" style={{ borderLeft: `1px solid ${LINE}` }}>
           {thread.posts.map((p) => (
             <p key={p.id} className="text-sm" style={{ color: MUTED }}>
-              <span style={{ color: p.isMine ? MOSS : TEXT }}>{p.author}</span>
+              <AuthorLink name={p.author} mine={p.isMine} />
               {' — '}{p.text}
             </p>
           ))}
