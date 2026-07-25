@@ -36,7 +36,7 @@ export function Profile() {
           </h1>
         )}
         <p className="text-xs" style={{ color: MUTED, ...MONO }}>
-          {app.library.length} games · {myReviews.length} reviews · {joinedGroups.length} fires
+          {app.library.length} games · {myReviews.length} reviews · {joinedGroups.length} boards
         </p>
       </div>
 

@@ -5,82 +5,87 @@ import { getGame } from '../../data/games';
 import type { Group } from '../../types';
 import { Btn, Chip, DISPLAY, EMBER, LINE, MONO, MOSS, MUTED, NOTCH, SURFACE, TEXT, focusRing, inputCls } from './ui';
 
-/** heat = live-ness of a fire; both area and gauge width follow it. */
-const heatOf = (g: Group) => g.members + g.posts.length * 800 + (g.joined ? 500 : 0);
+/** Activity score drives the ember gauge and the board ordering. */
+const activityOf = (g: Group) => g.members + g.posts.length * 800 + (g.joined ? 500 : 0);
 
 export function Groups() {
   const app = useApp();
-  const fires = useMemo(() => [...app.groups].sort((a, b) => heatOf(b) - heatOf(a)), [app.groups]);
-  const maxHeat = fires.length ? heatOf(fires[0]) : 1;
-  const [big, second, ...embers] = fires;
+  const boards = useMemo(() => [...app.groups].sort((a, b) => activityOf(b) - activityOf(a)), [app.groups]);
+  const maxActivity = boards.length ? activityOf(boards[0]) : 1;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8 pb-36">
-      <h1 className="text-2xl font-semibold" style={DISPLAY}>Tonight at the fires</h1>
+      <h1 className="text-2xl font-semibold" style={DISPLAY}>Forum</h1>
       <p className="mt-1 text-sm" style={{ color: MUTED }}>
-        {fires.reduce((s, f) => s + f.posts.length, 0)} conversations burning · a fire's size is how alive it is
+        {boards.length} boards · {boards.reduce((s, f) => s + f.posts.length, 0)} posts · the ember line shows how alive a board is
       </p>
 
-      {big && (
-        <div className="mt-6">
-          <FirePanel group={big} size="big" heatPct={100} />
-        </div>
-      )}
-      {second && (
-        <div className="mt-4 md:w-3/4">
-          <FirePanel group={second} size="mid" heatPct={(heatOf(second) / maxHeat) * 100} />
-        </div>
-      )}
-      {embers.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-4">
-          {embers.map((g) => (
-            <div key={g.id} className="min-w-56 flex-1">
-              <FirePanel group={g} size="ember" heatPct={(heatOf(g) / maxHeat) * 100} />
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Column headers — traditional board index */}
+      <div
+        className="mt-6 hidden gap-4 border-b px-4 pb-2 text-[11px] uppercase tracking-[0.14em] md:grid md:grid-cols-[1fr_7rem_5rem_12rem_7rem]"
+        style={{ color: MUTED, borderColor: LINE, ...DISPLAY }}
+      >
+        <span>board</span>
+        <span className="text-right">members</span>
+        <span className="text-right">posts</span>
+        <span>last post</span>
+        <span />
+      </div>
+
+      <div className="mt-2 flex flex-col gap-2">
+        {boards.map((g) => (
+          <BoardRow key={g.id} group={g} activityPct={(activityOf(g) / maxActivity) * 100} />
+        ))}
+      </div>
 
       <LogbookDrawer />
     </div>
   );
 }
 
-function FirePanel({ group, size, heatPct }: { group: Group; size: 'big' | 'mid' | 'ember'; heatPct: number }) {
+function BoardRow({ group, activityPct }: { group: Group; activityPct: number }) {
   const app = useApp();
-  const pad = size === 'big' ? 'p-8' : size === 'mid' ? 'p-6' : 'p-4';
   const last = group.posts[group.posts.length - 1];
   return (
-    <div className={`border ${pad}`} style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE }}>
-      {/* the heat gauge — same line vocabulary as the river spine */}
-      <div aria-hidden className="mb-3 h-[3px] w-full" style={{ background: LINE }}>
-        <div className="h-full" style={{ width: `${Math.max(heatPct, 6)}%`, background: EMBER }} />
+    <div className="border" style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE }}>
+      {/* ember gauge — same line vocabulary as the river spine */}
+      <div aria-hidden className="h-[3px] w-full" style={{ background: LINE }}>
+        <div className="h-full" style={{ width: `${Math.max(activityPct, 6)}%`, background: EMBER }} />
       </div>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <Link
-          to={`/groups/${group.id}`}
-          className={`font-semibold underline-offset-4 hover:underline ${focusRing} ${
-            size === 'big' ? 'text-2xl' : size === 'mid' ? 'text-lg' : 'text-base'
-          }`}
-          style={{ ...DISPLAY, color: TEXT }}
-        >
-          {group.name}
-        </Link>
-        <span className="text-xs" style={{ color: EMBER, ...MONO }}>
-          {group.members.toLocaleString()} around it
+      <div className="grid gap-x-4 gap-y-2 p-4 md:grid-cols-[1fr_7rem_5rem_12rem_7rem] md:items-center">
+        <div className="min-w-0">
+          <Link
+            to={`/groups/${group.id}`}
+            className={`font-semibold underline-offset-4 hover:underline ${focusRing}`}
+            style={{ ...DISPLAY, color: TEXT }}
+          >
+            {group.name}
+          </Link>
+          <p className="mt-0.5 truncate text-sm" style={{ color: MUTED }}>{group.description}</p>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {group.tags.map((t) => <Chip key={t}>{t.toLowerCase()}</Chip>)}
+          </div>
+        </div>
+        <span className="text-sm md:text-right" style={{ color: EMBER, ...MONO }}>
+          {group.members.toLocaleString()}
         </span>
-      </div>
-      {size !== 'ember' && <p className="mt-2 max-w-2xl text-sm" style={{ color: MUTED }}>{group.description}</p>}
-      {size === 'big' && last && (
-        <p className="mt-3 pl-3 text-sm" style={{ borderLeft: `2px solid ${EMBER}`, color: TEXT }}>
-          "{last.text}" <span style={{ color: MUTED }}>— {last.author}</span>
-        </p>
-      )}
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        {group.tags.map((t) => <Chip key={t}>{t.toLowerCase()}</Chip>)}
-        <span className="ml-auto">
+        <span className="text-sm md:text-right" style={{ color: TEXT, ...MONO }}>
+          {group.posts.length}
+        </span>
+        <span className="min-w-0 truncate text-xs" style={{ color: MUTED }}>
+          {last ? (
+            <>
+              <span style={{ color: last.isMine ? MOSS : TEXT }}>{last.author}</span>
+              {' · '}
+              <span style={MONO}>{last.date}</span>
+            </>
+          ) : (
+            'no posts yet'
+          )}
+        </span>
+        <span className="md:justify-self-end">
           <Btn onClick={() => app.toggleGroupMembership(group.id)}>
-            {group.joined ? 'stand up' : 'sit down'}
+            {group.joined ? 'leave' : 'join'}
           </Btn>
         </span>
       </div>
@@ -96,11 +101,11 @@ export function GroupDetail() {
 
   if (!group) {
     return (
-      <div className="mx-auto max-w-3xl px-5 py-10">
+      <div className="mx-auto max-w-4xl px-5 py-10">
         <p>
-          This fire has gone out.{' '}
+          This board doesn't exist.{' '}
           <Link to="/groups" className={`underline underline-offset-4 ${focusRing}`} style={{ color: TEXT }}>
-            Back to the circle.
+            Back to the forum.
           </Link>
         </p>
       </div>
@@ -111,48 +116,63 @@ export function GroupDetail() {
     if (text.trim()) { app.postToGroup(group.id, text.trim()); setText(''); }
   };
 
+  const posts = [...group.posts].reverse();
+
   return (
-    <div className="mx-auto max-w-3xl px-5 py-8 pb-36">
-      <Link to="/groups" className={`text-xs hover:text-[var(--gu-text)] ${focusRing}`} style={{ color: MUTED }}>
-        back to the fires
-      </Link>
+    <div className="mx-auto max-w-4xl px-5 py-8 pb-36">
+      <p className="text-xs" style={{ color: MUTED }}>
+        <Link to="/groups" className={`hover:text-[var(--gu-text)] ${focusRing}`} style={{ color: MUTED }}>
+          forum
+        </Link>
+        {' / '}
+        <span style={{ color: TEXT }}>{group.name}</span>
+      </p>
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="text-2xl font-semibold" style={DISPLAY}>{group.name}</h1>
         <Btn onClick={() => app.toggleGroupMembership(group.id)}>
-          {group.joined ? 'stand up from this fire' : 'sit down at this fire'}
+          {group.joined ? 'leave board' : 'join board'}
         </Btn>
       </div>
       <p className="mt-2 max-w-xl text-sm" style={{ color: MUTED }}>{group.description}</p>
       <p className="mt-2 text-xs" style={{ color: MUTED }}>
-        who sits here: <span style={{ color: EMBER, ...MONO }}>{group.members.toLocaleString()}</span> ·{' '}
-        {group.tags.join(' · ').toLowerCase()}
+        members: <span style={{ color: EMBER, ...MONO }}>{group.members.toLocaleString()}</span> · posts:{' '}
+        <span style={{ ...MONO, color: TEXT }}>{group.posts.length}</span> · {group.tags.join(' · ').toLowerCase()}
       </p>
 
-      <div className="mt-8 space-y-5">
-        {[...group.posts].reverse().map((p) => (
-          <div key={p.id} className="pl-4" style={{ borderLeft: `1px solid ${LINE}` }}>
-            <p className="text-xs" style={{ color: MUTED }}>
-              <span style={{ color: p.isMine ? MOSS : TEXT }}>{p.author}</span> · <span style={MONO}>{p.date}</span>
-            </p>
-            <p className="mt-1 text-[15px] leading-relaxed" style={{ color: TEXT }}>{p.text}</p>
+      {/* Forum-style post rows: author rail left, message right */}
+      <div className="mt-8 flex flex-col gap-2">
+        {posts.map((p, i) => (
+          <div key={p.id} className="grid border md:grid-cols-[11rem_1fr]" style={{ background: SURFACE, borderColor: LINE }}>
+            <div className="border-b p-3 md:border-b-0 md:border-r" style={{ borderColor: LINE }}>
+              <p className="text-sm font-semibold" style={{ ...DISPLAY, color: p.isMine ? MOSS : TEXT }}>
+                {p.author}
+              </p>
+              <p className="mt-0.5 text-[11px]" style={{ color: MUTED, ...MONO }}>
+                {p.date} · #{posts.length - i}
+              </p>
+            </div>
+            <p className="p-3 text-[15px] leading-relaxed" style={{ color: TEXT }}>{p.text}</p>
           </div>
         ))}
+        {posts.length === 0 && (
+          <p className="text-sm" style={{ color: MUTED }}>No posts yet — start the board off below.</p>
+        )}
       </div>
 
-      <div className="sticky bottom-6 mt-10 border p-3" style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE }}>
+      <div className="sticky bottom-6 mt-8 border p-3" style={{ clipPath: NOTCH, background: SURFACE, borderColor: LINE }}>
         {group.joined ? (
           <div className="flex gap-2">
             <input
               className={`${inputCls} flex-1`}
-              placeholder="say it to the fire"
+              placeholder="write a reply"
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') post(); }}
             />
-            <Btn primary disabled={!text.trim()} onClick={post}>speak</Btn>
+            <Btn primary disabled={!text.trim()} onClick={post}>post reply</Btn>
           </div>
         ) : (
-          <p className="text-sm" style={{ color: MUTED }}>Sit down at this fire to speak.</p>
+          <p className="text-sm" style={{ color: MUTED }}>Join this board to post.</p>
         )}
       </div>
 
@@ -168,7 +188,10 @@ export function LogbookDrawer() {
   const hours = app.library.reduce((s, e) => s + (e.hoursPlayed ?? 0), 0);
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t backdrop-blur" style={{ borderColor: LINE, background: 'rgba(18,16,13,0.96)' }}>
+    <div
+      className="fixed inset-x-0 bottom-0 z-30 border-t backdrop-blur"
+      style={{ borderColor: LINE, background: 'color-mix(in srgb, var(--gu-ground) 96%, transparent)' }}
+    >
       <button
         onClick={() => setOpen(!open)}
         className={`mx-auto flex w-full max-w-6xl cursor-pointer items-center gap-4 border-none bg-transparent px-5 py-2.5 text-left text-xs ${focusRing}`}

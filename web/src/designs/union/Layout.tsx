@@ -11,7 +11,7 @@ import { DISPLAY, GROUND, LINE, MOSS, MUTED, TEXT, focusRing } from './ui';
 
 const LINKS = [
   { to: '/', label: 'River', end: true },
-  { to: '/groups', label: 'Fires' },
+  { to: '/groups', label: 'Forum' },
   { to: '/deck', label: 'Deck' },
   { to: '/browse', label: 'Browse' },
   { to: '/library', label: 'Logbook' },
